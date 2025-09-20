@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Lista de Tareas</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>To-Do</h1>
+
+      <div class="input-section">
+        <input type="text" id="nuevaTarea" placeholder="Nueva tarea..." />
+        <select id="categoria">
+          <option value="personal">Personal</option>
+          <option value="trabajo">Trabajo</option>
+          <option value="estudio">Estudio</option>
+          <option value="urgente">Urgente</option>
+          <option value="otros">Otros</option>
+        </select>
+        <button id="agregarTarea">Agregar</button>
+      </div>
+
+      <p id="contador">Tareas pendientes: 0</p>
+
+      <div id="listaTareas"></div>
+
+      <script>
+        let tareas = [];
+
+        let input = document.getElementById("nuevaTarea");
+        let boton = document.getElementById("agregarTarea");
+        let lista = document.getElementById("listaTareas");
+        let contador = document.getElementById("contador");
+
+        console.log("Array inicial:", tareas);
+        console.log("Numero de tareas:", tareas.length);
+
+        function agregarTarea() {
+          let textoTarea = input.value.trim();
+          let categoriaSeleccionada =
+            document.getElementById("categoria").value;
+
+          if (textoTarea === "") {
+            alert("Escribe algo.");
+            return;
+          }
+
+          let nuevaTarea = {
+            id: Date.now(),
+            texto: textoTarea,
+            categoria: categoriaSeleccionada,
+            completada: false,
+          };
+
+          tareas.push(nuevaTarea);
+
+          console.log("Nueva tarea agregada");
+          console.log("Array actualizado:", tareas);
+          console.log("Numero de tareas:", tareas.length);
+
+          input.value = "";
+          mostrarTareas();
+          guardarTareas();
+        }
+
+        boton.onclick = agregarTarea;
+
+        function mostrarTareas() {
+          lista.innerHTML = "";
+
+          for (let i = 0; i < tareas.length; i++) {
+            let tarea = tareas[i];
+            let claseCSS = tarea.completada ? "tarea completada" : "tarea";
+
+            let tareaHTML = `
+            <div class="${claseCSS}">
+                <span>${tarea.texto}</span>
+                <div class="categoria">[${tarea.categoria}]</div>
+                <div class="botones-tarea">
+                    <button onclick="completarTarea(${i})" class="completar">
+                        ${tarea.completada ? "Desmarcar" : "Completar"}
+                    </button>
+                    <button onclick="eliminarTarea(${i})" class="eliminar">Eliminar</button>
+                </div>
+            </div>
+            `;
+            lista.innerHTML += tareaHTML;
+          }
+
+          let pendientes = tareas.filter((tarea) => !tarea.completada).length;
+          contador.textContent = "Tareas pendientes: " + pendientes;
+        }
+
+        function eliminarTarea(indice) {
+          console.log("Eliminando tarea en el indice:", indice);
+          console.log("Tarea a eliminar:", tareas[indice]);
+
+          tareas.splice(indice, 1);
+
+          console.log("Array actualizado:", tareas);
+
+          mostrarTareas();
+          guardarTareas();
+        }
+
+        function completarTarea(indice) {
+          tareas[indice].completada = !tareas[indice].completada;
+
+          let estado = tareas[indice].completada ? "completada" : "pendiente";
+          console.log(`Tarea en el indice ${indice} marcada como ${estado}`);
+
+          mostrarTareas();
+          guardarTareas();
+        }
+
+        function guardarTareas() {
+          localStorage.setItem("tareas", JSON.stringify(tareas));
+          console.log("Tareas guardadas:", tareas);
+        }
+
+        function cargarTareas() {
+          let tareasGuardadas = localStorage.getItem("tareas");
+          if (tareasGuardadas) {
+            tareas = JSON.parse(tareasGuardadas);
+            console.log("Tareas cargadas:", tareas);
+            mostrarTareas();
+          }
+        }
+
+        cargarTareas();
+      </script>
+    </div>
+  </body>
+</html>
