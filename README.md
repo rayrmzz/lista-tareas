@@ -10,6 +10,9 @@ Una aplicación web moderna para gestionar tareas diarias con persistencia de da
 - Persistencia de datos (localStorage)
 - Diseño responsive
 - Animaciones suaves
+- Agregar fecha por tarea
+- Categorias
+- Filtrar por fecha y categoria
 
 ## Tecnologías utilizadas
 
