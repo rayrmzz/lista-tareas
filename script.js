@@ -68,10 +68,11 @@ function mostrarTareas() {
                   tarea.categoria
                 }${fechaTexto}${fechaVencida}</div>
                 <div class="botones-tarea">
-                    <button onclick="completarTarea(${i})" class="completar">
+                    <button class="completar" data-id="${tarea.id}">
                         ${tarea.completada ? "Desmarcar" : "Completar"}
                     </button>
-                    <button onclick="eliminarTarea(${i})" class="eliminar">Eliminar</button>
+                    <button class="eliminar" data-id="${tarea.id}">Eliminar
+                    </button>
                 </div>
             </div>
             `;
@@ -80,28 +81,6 @@ function mostrarTareas() {
 
   let pendientes = tareas.filter((tarea) => !tarea.completada).length;
   contador.textContent = "Tareas pendientes: " + pendientes;
-}
-
-function eliminarTarea(indice) {
-  console.log("Eliminando tarea en el indice:", indice);
-  console.log("Tarea a eliminar:", tareas[indice]);
-
-  tareas.splice(indice, 1);
-
-  console.log("Array actualizado:", tareas);
-
-  mostrarTareas();
-  guardarTareas();
-}
-
-function completarTarea(indice) {
-  tareas[indice].completada = !tareas[indice].completada;
-
-  let estado = tareas[indice].completada ? "completada" : "pendiente";
-  console.log(`Tarea en el indice ${indice} marcada como ${estado}`);
-
-  mostrarTareas();
-  guardarTareas();
 }
 
 function guardarTareas() {
@@ -143,10 +122,10 @@ function mostrarTareasFiltradas(tareasFiltradas) {
               <span>${tarea.texto}</span>
               <div class="categoria">[${tarea.categoria}]</div>
               <div class="botones-tarea">
-                <button onclick="completarTarea(${i})" class="completar">
+                <button class="completar" data-id="${tarea.id}">
                   ${tarea.completada ? "Desmarcar" : "Completar"}
                 </button>
-                <button onclick="eliminarTarea(${i})" class="eliminar">Eliminar</button>
+                <button class="eliminar" data-id="${tarea.id}">Eliminar</button>
               </div>
             </div>
             `;
@@ -185,6 +164,40 @@ function ordenarPor(criterio) {
   tareas = tareasOrdenadas;
   mostrarTareas();
   console.log(`Tareas ordenadas por ${criterio}`);
+}
+
+function idxById(id) {
+  return tareas.findIndex((t) => t.id === id);
+}
+
+lista.addEventListener("click", (e) => {
+  const btn = e.target.closest("button");
+  if (!btn) return;
+
+  const id = Number(btn.dataset.id);
+  if (!id) return;
+
+  if (btn.classList.contains("completar")) {
+    completarTareaPorId(id);
+  } else if (btn.classList.contains("eliminar")) {
+    eliminarTareaPorId(id);
+  }
+});
+
+function completarTareaPorId(id) {
+  const i = idxById(id);
+  if (i === -1) return;
+  tareas[i].completada = !tareas[i].completada;
+  mostrarTareas();
+  guardarTareas();
+}
+
+function eliminarTareaPorId(id) {
+  const i = idxById(id);
+  if (i === -1) return;
+  tareas.splice(i, 1);
+  mostrarTareas();
+  guardarTareas();
 }
 
 cargarTareas();
