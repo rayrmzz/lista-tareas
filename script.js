@@ -11,6 +11,35 @@ let contador = document.getElementById("contador");
 console.log("Array inicial:", tareas);
 console.log("Numero de tareas:", tareas.length);
 
+const exportarBtn = document.getElementById("btnExportar");
+exportarBtn.addEventListener("click", () => {
+  console.log("Exportando tareas a JSON");
+
+  const sugerido = nombreBackupSugerido();
+  const nombre = prompt("Nombre del archivo:", sugerido);
+  if (nombre === null) return;
+
+  const payload = { version: SCHEMA_VERSION, items: tareas };
+
+  const json = JSON.stringify(payload, null, 2);
+
+  console.log("Preview del JSON a exportar:\n", json);
+
+  const blob = new Blob([json], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = nombre && nombre.trim() ? nombre.trim() : sugerido;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  URL.revokeObjectURL(url);
+
+  console.log("Nombre elegido:", nombre);
+});
+
 function agregarTarea() {
   let textoTarea = input.value.trim();
   let categoriaSeleccionada = document.getElementById("categoria").value;
@@ -231,4 +260,18 @@ function eliminarTareaPorId(id) {
   guardarTareas();
 }
 
+function nombreBackupSugerido() {
+  const dt = new Date();
+
+  const yyyy = dt.getFullYear();
+  const mm = String(dt.getMonth() + 1).padStart(2, "0");
+  const dd = String(dt.getDate()).padStart(2, "0");
+
+  const hh = String(dt.getHours()).padStart(2, "0");
+  const min = String(dt.getMinutes()).padStart(2, "0");
+
+  return `tareas_backup_${yyyy}${mm}${dd}_${hh}${min}.json`;
+}
+
+console.log(nombreBackupSugerido());
 cargarTareas();

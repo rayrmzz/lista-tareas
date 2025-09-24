@@ -24,12 +24,39 @@ body {
 
 h1 {
   text-align: center;
+  margin-left: auto;
   color: #333;
   margin-bottom: 30px;
   font-size: 2.5rem;
   background: linear-gradient(45deg, #667eea, #764ba2);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+header button {
+  margin-left: auto;
+  margin-bottom: auto;
+  padding: 10px 20px;
+  background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 154, 158, 0.4);
+}
+
+header button:hover {
+  box-shadow: 0 6px 25px rgba(255, 154, 158, 0.6);
+  transform: translateY(-2px);
 }
 
 .input-section {
