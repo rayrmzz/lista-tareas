@@ -12,6 +12,54 @@ console.log("Array inicial:", tareas);
 console.log("Numero de tareas:", tareas.length);
 
 const exportarBtn = document.getElementById("btnExportar");
+const importarBtn = document.getElementById("btnImportar");
+const importFile = document.getElementById("importFile");
+
+importarBtn.addEventListener("click", () => importFile.click());
+
+importFile.addEventListener("change", () => {
+  const file = importFile.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(reader.result);
+
+      const itemsRaw = Array.isArray(data) ? data : data.items;
+      if (!Array.isArray(itemsRaw)) throw new Error("Formato inválido");
+
+      const sane = itemsRaw
+        .filter(
+          (t) => t && typeof t.id === "number" && typeof t.texto === "string"
+        )
+        .map((t) => ({
+          id: t.id,
+          texto: String(t.texto).trim(),
+          categoria: t.categoria || "",
+          fechaLimite: t.fechaLimite || "",
+          completada: Boolean(t.completada),
+        }));
+
+      if (!confirm(`Se van a importar ${sane.length} tareas. ¿Continuar?`)) {
+        importFile.value = "";
+        return;
+      }
+
+      tareas = sane;
+      guardarTareas();
+      mostrarTareas();
+      alert("Backup importado correctamente.");
+    } catch (e) {
+      console.error("Error leyendo el archivo:", e);
+      alert("Error leyendo el archivo: " + e.message);
+    } finally {
+      importFile.value = "";
+    }
+  };
+  reader.readAsText(file);
+});
+
 exportarBtn.addEventListener("click", () => {
   console.log("Exportando tareas a JSON");
 
@@ -274,4 +322,5 @@ function nombreBackupSugerido() {
 }
 
 console.log(nombreBackupSugerido());
+
 cargarTareas();

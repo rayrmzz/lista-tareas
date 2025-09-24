@@ -11,6 +11,17 @@ body {
   padding: 20px;
 }
 
+.importFile {
+  display: none;
+}
+
+.options {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 15px;
+}
+
 .container {
   max-width: 900px;
   margin: 0 auto;
@@ -25,6 +36,7 @@ body {
 h1 {
   text-align: center;
   margin-left: auto;
+  margin-right: auto;
   color: #333;
   margin-bottom: 30px;
   font-size: 2.5rem;

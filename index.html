@@ -10,7 +10,16 @@
     <div class="container">
       <header>
         <h1>To-Do</h1>
-        <button id="btnExportar">Exportar JSON</button>
+        <div class="options">
+          <button id="btnExportar">Exportar JSON</button>
+          <button id="btnImportar">Importar JSON</button>
+          <input
+            class="importFile"
+            type="file"
+            id="importFile"
+            accept="application/json"
+          />
+        </div>
       </header>
 
       <div class="input-section">
