@@ -427,6 +427,19 @@ select option {
     font-size: 1.5em;
   }
 
+  .options {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .options button {
+    width: 100%;
+    margin: 0;
+    padding: 8px;
+    font-size: 11px;
+  }
+
   .botones-tarea {
     flex-direction: column;
     gap: 10px;
