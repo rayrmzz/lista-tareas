@@ -379,6 +379,17 @@ select option {
   transform: translateY(-2px);
 }
 
+:focus-visible {
+  outline: 3px solid rgba(102, 126, 234, 0.6);
+  outline-offset: 2px;
+  border-radius: 10px;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 @media (max-width: 768px) {
   body {
     padding: 10px;
