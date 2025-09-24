@@ -1,5 +1,8 @@
 let tareas = [];
 
+const STORAGE_KEY = "tareas_app";
+const SCHEMA_VERSION = 1;
+
 let input = document.getElementById("nuevaTarea");
 let boton = document.getElementById("agregarTarea");
 let lista = document.getElementById("listaTareas");
@@ -84,16 +87,44 @@ function mostrarTareas() {
 }
 
 function guardarTareas() {
-  localStorage.setItem("tareas", JSON.stringify(tareas));
-  console.log("Tareas guardadas:", tareas);
+  const payload = { version: SCHEMA_VERSION, items: tareas };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+  console.log("Tareas guardadas:", payload);
 }
 
 function cargarTareas() {
-  let tareasGuardadas = localStorage.getItem("tareas");
-  if (tareasGuardadas) {
-    tareas = JSON.parse(tareasGuardadas);
-    console.log("Tareas cargadas:", tareas);
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+
+    const parsed = JSON.parse(raw);
+
+    let items;
+    if (Array.isArray(parsed)) {
+      items = parsed;
+    } else if (parsed && Array.isArray(parsed.items)) {
+      items = parsed.items;
+    } else {
+      console.warn("Formato de datos desconocido; se ignoran los datos.");
+      return;
+    }
+
+    tareas = items
+      .filter(
+        (t) => t && typeof t.id === "number" && typeof t.texto === "string"
+      )
+      .map((t) => ({
+        id: t.id,
+        texto: t.texto.trim(),
+        categoria: t.categoria || "",
+        fechaLimite: t.fechaLimite || "",
+        completada: Boolean(t.completada),
+      }));
+
+    console.log(`Tareas cargadas: ${tareas.length}`);
     mostrarTareas();
+  } catch (e) {
+    console.error("Error al cargar tareas:", e);
   }
 }
 
