@@ -123,6 +123,10 @@ boton.onclick = agregarTarea;
 
 function mostrarTareas() {
   lista.innerHTML = "";
+  if (tareas.length === 0) {
+    renderEmptyState();
+    return;
+  }
 
   for (let i = 0; i < tareas.length; i++) {
     let tarea = tareas[i];
@@ -160,8 +164,7 @@ function mostrarTareas() {
     lista.innerHTML += tareaHTML;
   }
 
-  let pendientes = tareas.filter((tarea) => !tarea.completada).length;
-  contador.textContent = "Tareas pendientes: " + pendientes;
+  updateContador();
 }
 
 function guardarTareas() {
@@ -221,6 +224,10 @@ function filtrarPor(categoria) {
 
 function mostrarTareasFiltradas(tareasFiltradas) {
   lista.innerHTML = "";
+  if (tareasFiltradas.length === 0) {
+    renderEmptyState("No hay tareas para mostrar en esta categoría.");
+    return;
+  }
 
   for (let i = 0; i < tareasFiltradas.length; i++) {
     let tarea = tareasFiltradas[i];
@@ -240,6 +247,8 @@ function mostrarTareasFiltradas(tareasFiltradas) {
             `;
     lista.innerHTML += tareaHTML;
   }
+
+  updateContador();
 }
 
 function buscarTareas() {
@@ -325,6 +334,43 @@ function nombreBackupSugerido() {
 function guardarTareasDebounce() {
   clearTimeout(autoSaverTimer);
   autoSaverTimer = setTimeout(guardarTareas, 300);
+}
+
+function updateContador() {
+  const ahora = new Date();
+  const DIA_MS = 24 * 60 * 60 * 1000;
+
+  const pendientes = tareas.filter((t) => !t.completada).length;
+
+  const vencidas = tareas.filter(
+    (t) => !t.completada && t.fechaLimite && new Date(t.fechaLimite) < ahora
+  ).length;
+
+  const proximas24h = tareas.filter((t) => {
+    if (t.completada || !t.fechaLimite) return false;
+    const limite = new Date(t.fechaLimite);
+    const diff = limite - ahora;
+    return diff >= 0 && diff <= DIA_MS;
+  }).length;
+
+  contador.innerHTML = `
+    Tareas pendientes: ${pendientes}
+    <span class="badges">
+      <span class="badges badge--amarilla">Proximas 24h: ${proximas24h}</span>
+      <span class="badges badge--roja">Vencidas: ${vencidas}</span>
+    </span>
+  `;
+}
+
+function renderEmptyState(msg = "No hay tareas para mostrar.") {
+  lista.innerHTML = `
+    <div class="empty-state" role="status" aria-live="polite">
+      </h3>${msg}</h3>
+      <p>Agrega una nueva tarea para comenzar.</p>
+      <div class="cta">Sugerencia: usa categorias y fechas para organizar mejor tus tareas.</div>
+    </div>
+  `;
+  updateContador();
 }
 
 console.log(nombreBackupSugerido());

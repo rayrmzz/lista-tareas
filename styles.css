@@ -130,6 +130,50 @@ header button:hover {
   border-radius: 10px;
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(5px);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.badges {
+  display: inline-flex;
+  gap: 8px;
+  margin-left: 8px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  background: rgba(102, 126, 234, 0.5);
+}
+
+.badge--verde {
+  background: rgba(68, 160, 141, 0.18);
+}
+
+.badge--amarillo {
+  background: rgba(255, 215, 0, 0.18);
+}
+
+.badge--rojo {
+  background: rgba(255, 68, 68, 0.18);
+}
+
+.empty-state {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 28px;
+  border: 1px dashed rgba(0, 0, 0, 0.15);
+  border-radius: 16px;
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  opacity: 0.9;
+  margin: 12px 0;
 }
 
 .tarea {
