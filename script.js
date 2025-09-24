@@ -1,4 +1,5 @@
 let tareas = [];
+let autoSaverTimer;
 
 const STORAGE_KEY = "tareas_app";
 const SCHEMA_VERSION = 1;
@@ -115,7 +116,7 @@ function agregarTarea() {
   input.value = "";
   document.getElementById("categoria").value = "";
   mostrarTareas();
-  guardarTareas();
+  guardarTareasDebounce();
 }
 
 boton.onclick = agregarTarea;
@@ -297,7 +298,7 @@ function completarTareaPorId(id) {
   if (i === -1) return;
   tareas[i].completada = !tareas[i].completada;
   mostrarTareas();
-  guardarTareas();
+  guardarTareasDebounce();
 }
 
 function eliminarTareaPorId(id) {
@@ -305,7 +306,7 @@ function eliminarTareaPorId(id) {
   if (i === -1) return;
   tareas.splice(i, 1);
   mostrarTareas();
-  guardarTareas();
+  guardarTareasDebounce();
 }
 
 function nombreBackupSugerido() {
@@ -319,6 +320,11 @@ function nombreBackupSugerido() {
   const min = String(dt.getMinutes()).padStart(2, "0");
 
   return `tareas_backup_${yyyy}${mm}${dd}_${hh}${min}.json`;
+}
+
+function guardarTareasDebounce() {
+  clearTimeout(autoSaverTimer);
+  autoSaverTimer = setTimeout(guardarTareas, 300);
 }
 
 console.log(nombreBackupSugerido());
